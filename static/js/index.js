@@ -56,10 +56,20 @@ function mainController($rootScope, $scope, $mdSidenav, $http) {
       title.append("tail -f " + "./" + file.split('/').pop());
     };
     socket.onmessage = function (e) {
+
+      // Check to see if at bottom of document, then later scroll down if true
+      var scrollDown;
+      if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight) {
+        scrollDown = 1;
+      }
+
       container.append(e.data.trim() + "<br>");
 
-      // On update of document scroll to bottom
-      window.scrollTo(0, document.body.scrollHeight);
+      // If at bottom of document -> on update of document scroll to bottom
+      if (scrollDown == 1) {
+          window.scrollTo(0, document.body.scrollHeight);
+      }
+
     }
     socket.onclose = function () {
       container.append("<p>Websocket connection closed. Tail stopped.</p>");
